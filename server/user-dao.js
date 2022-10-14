@@ -10,17 +10,17 @@ const db = new sqlite.Database('courses.db', (err) => {
 
 exports.getUserById = (id) => {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM students WHERE id = ?';
+    const sql = 'SELECT * FROM USERS WHERE id = ?';
     db.get(sql, [id], (err, row) => {
       if (err)
         reject(err);
       else if (row === undefined)
-        resolve({ error: 'Student not found.' });
+        resolve({ error: 'User not found.' });
       else {
         // by default, the local strategy looks for "username": 
         // not to create confusion in server.js, we can create an object with that property
-        const student = { id: row.id, username: row.email, name: row.name }
-        resolve(student);
+        const user = { id: row.id, username: row.email, name: row.name }
+        resolve(user);
       }
     });
   });
@@ -38,7 +38,7 @@ function getUser(email, password) {
         resolve(false);
       }
       else {
-        const user = { id: row.id, username: row.email, name: row.name, user_score: row.user_score }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
+        const user = { id: row.id, username: row.email, name: row.name, tole: row.role }; //NOTA BENE-->QUI NON DOBBIAMO METTERE LA PASSWORD!!-->vedi dopo perchè dobbiamo salvarla come HASH
 
         //4.2 STEP PASSPORT-->HASHING PASSWORD
         crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) {
