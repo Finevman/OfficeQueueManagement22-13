@@ -2,6 +2,7 @@
 
 const express = require('express');
 const dao = require('./DAO');
+const QueuesRouter = require('./QueuesRouter');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
@@ -19,7 +20,7 @@ const app = express();
 // set up the middlewares
 app.use(morgan('dev'));
 app.use(express.json());
-
+app.use('/api',QueuesRouter);
 //corsOptions
 const corsOptions = {
   origin: 'http://localhost:3000',
