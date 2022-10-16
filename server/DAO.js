@@ -40,7 +40,7 @@ function addUser(user) {
 function updateUserRole(id, role) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE USERS SET Role = ? where Id = ?';
-    db.run(sql, role, id, (err, rows) => {
+    db.run(sql, role, id, (err) => {
       if (err)
         reject(err);
       else
@@ -89,13 +89,25 @@ function addService(service) {
   });
 }
 
-function updateServiceName(name) {
+function updateServiceName(oldName, newName) {
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE SERVICES SET ServiceName = ? where ServiceName = ?';
-    db.run(sql, role, name, (err, rows) => {
+    db.run(sql, newName, oldName, (err) => {
       if (err)
         reject(err);
       else
+        resolve(true);
+    });
+  });
+}
+
+function updateServiceTime(name, time) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE SERVICES SET AverageTime = ? where ServiceName = ?';
+    db.run(sql, time, name, (err) => {
+      if(err)
+        reject(err);
+      else 
         resolve(true);
     });
   });
@@ -113,6 +125,46 @@ function deleteService(name) {
   });
 };
 
+/*************COUNTERS CRUD************/
+
+function readCounters() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT * FROM Counters ';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function addCounter(id) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Counters (Id) VALUES (?)';
+    db.run(sql, id, (err) =>{
+      if(err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+function deleteCounter(id) {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM Counters WHERE Id = ?';
+    db.run(sql, id, (err) => {
+      if(err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+
 /*************QUEUES FUNCTIONS************/
 
 function readTicketsToBeServed() {
@@ -128,20 +180,32 @@ function readTicketsToBeServed() {
   });
 }
 
-/*************COUNTERS FUNCTIONS************/
-
-function readCounters() {
+function newTicket(IdTicket) {
   return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM Counters ';
-    db.all(sql, (err, rows) => {
-      if (err) {
+    const sql = 'INSERT INTO Queues (IdTicket, IsCalled) VALUES (?, ?)';
+    db.run(sql, IdTicket, 0, (err) => {
+      if(err)
         reject(err);
-      } else {
-        resolve(rows);
-      }
+      else
+        resolve(true);
     });
   });
 }
+
+function ticketServed(IdTicket) {
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE Queues SET IsCalled = ? WHERE IdTicket = ?';
+    db.run(sql, 1, IdTicket, (err) => {
+      if(err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+
+/**************COUNTERS_SERVICES FUNCTIONS ****************/
 
 function getCounterByService(serviceName) {
   return new Promise((resolve, reject) => {
@@ -153,8 +217,8 @@ function getCounterByService(serviceName) {
         resolve(false);
       else
         resolve(rows);
-    })
-  })
+    });
+  });
 }
 
 function getServiceByCounter(idCounter) {
@@ -167,13 +231,38 @@ function getServiceByCounter(idCounter) {
         resolve(false);
       else
         resolve(rows);
-    })
-  })
+    });
+  });
+}
+
+function addServiceToCounter(idCounter, serviceName) {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO Counters_Services (IdCounter, ServiceName) VALUES (?, ?)';
+    db.run(sql, idCounter, serviceName, (err) =>{
+      if(err) 
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
+}
+
+function removeServiceFromCounter(idCounter, serviceName) {
+  return new Promise((resolve, reject) => {
+    const sql = 'DELETE FROM Counters_Services WHERE IdCounter = ? AND ServiceName = ?';
+    db.run(sql, idCounter, serviceName, (err) => {
+      if(err)
+        reject(err);
+      else
+        resolve(true);
+    });
+  });
 }
 
 /*************SERVICES DATA FUNCTIONS************/
 
 module.exports = {
   readUsers, addUser, updateUserRole, deleteUser, readServices, addService, updateServiceName, deleteService,
-  readTicketsToBeServed, readCounters, getCounterByService, getServiceByCounter
+  readTicketsToBeServed, addCounter, deleteCounter, readCounters, getCounterByService, getServiceByCounter,
+  addServiceToCounter, removeServiceFromCounter, ticketServed, updateServiceTime, newTicket
 };
