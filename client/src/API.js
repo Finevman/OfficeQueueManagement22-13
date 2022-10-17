@@ -45,6 +45,24 @@ const logOut = async () => {
     if (response.ok)
         return null;
 }
+
+/*************************SERVICES API**********************/
+
+async function getServices(){
+    const res = await fetch(APIURL+'/api/services', {
+        method:'GET',
+        credentials: 'include',
+    });
+    if(res.ok){
+        const studyPlan = await res.json();
+        return studyPlan;
+    }else{
+        const err = await res.text();
+        // console.log(err)
+        return [];
+    }
+}
+
 /************************************************/
 
 /*************OBJECTS API****************/
@@ -126,5 +144,5 @@ async function updateRiddleStatus(id, status) {
 
 
 //EXPORT FUNCTIONS------------------------------
-const API = { logIn, getUserInfo, logOut}
+const API = { logIn, getUserInfo, logOut, getServices}
 export default API;
