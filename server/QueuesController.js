@@ -55,6 +55,18 @@ exports.getLength =async function(req,res)  {
 
 }
 
+exports.getServices =async function(req,res)  {
+    dao.getServices().then(
+        result => {
+             return res.status(200).json(result);                       
+        },
+        error => {
+            return res.status(500).send(error);
+        }
+    )
+
+}
+
 exports.clearQueues =async function(req,res)  {
     dao.deleteQueues().then(
         result => {

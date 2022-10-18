@@ -50,6 +50,18 @@ const db = new sqlite.Database('oqm.db', err => { if (err) throw err;});
             });
           }
     
+          exports.getServices = () =>{
+            return new Promise((resolve,reject)=>{
+          
+              db.all("SELECT * FROM Services ",[],(err,rows)=>{
+                if(err){
+                  reject (err);
+                  return;
+                }
+                resolve (rows)
+              });
+            });
+          }
     
 
 
