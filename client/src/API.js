@@ -49,7 +49,7 @@ const logOut = async () => {
 /*************************SERVICES API**********************/
 
 async function getServices(){
-    const res = await fetch(APIURL+'/api/services', {
+    const res = await fetch('http://localhost:3001'+'/api/services', {
         method:'GET',
         credentials: 'include',
     });
@@ -59,9 +59,27 @@ async function getServices(){
     }else{
         const err = await res.text();
         // console.log(err)
-        return [];
+        throw err;
     }
 }
+
+/*************************TICKET API**********************/
+
+async function takeTicket(service){
+    const res = await fetch('http://localhost:3001'+'/api/Ticket/'+service, {
+        method:'POST',
+        credentials: 'include',
+    });
+    if(res.ok){
+        const tId = await res.json();
+        return tId;
+    }else{
+        const err = await res.text();
+        // console.log(err)
+        throw err;
+    }
+}
+
 
 /************************************************/
 
@@ -144,5 +162,5 @@ async function updateRiddleStatus(id, status) {
 
 
 //EXPORT FUNCTIONS------------------------------
-const API = { logIn, getUserInfo, logOut, getServices}
+const API = { logIn, getUserInfo, logOut, getServices, takeTicket}
 export default API;

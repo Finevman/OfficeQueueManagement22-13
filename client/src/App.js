@@ -18,19 +18,33 @@ function App() {
   const [message, setMessage] = useState('');
   const [services, setServices] = useState([])
 
-  const ieServices = [{ServiceName:'Contabilidad', AverageTime:5}, //Dummy object <---------------------------------
-                      {ServiceName:'Servicio al cliente', AverageTime:10},
-                      {ServiceName:'Ventas', AverageTime:15}]; 
-
   //*******Initial query*******//
   useEffect(() => {
     async function fetchServices() {
-      // const fetchedServices = await API.getServices();
-      // setServices(fetchedServices);
-      setServices(ieServices)
+      try {
+        const fetchedServices = await API.getServices();
+        setServices(fetchedServices);
+      } catch (error) {
+        handleErrors(error);
+      }
+      
     }
     fetchServices();
   }, []);
+
+  //
+  async function takeTicket(service){
+    if (typeof service === 'string') {
+      try {
+        const tId = await API.takeTicket(service)
+        console.log(tId)
+      } catch (error) {
+        handleErrors(error)
+      }
+    } else {
+      handleErrors({error:"Service must be a valid string"})
+    }
+  }
 
   // If an error occurs, the error message will be shown in a toast.
   const handleErrors = (err) => {
@@ -47,7 +61,7 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
-            <Route path="/serviceCards" element={<ServicesContainer services={services}/>} />
+            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{ message }</Toast.Body>

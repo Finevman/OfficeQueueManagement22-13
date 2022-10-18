@@ -20,14 +20,13 @@ const app = express();
 // set up the middlewares
 app.use(morgan('dev'));
 app.use(express.json());
-app.use('/api',QueuesRouter);
 //corsOptions
 const corsOptions = {
   origin: 'http://localhost:3000',
   credentials: true,
 };
 app.use(cors(corsOptions));
-
+app.use('/api',QueuesRouter);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {

@@ -13,24 +13,20 @@ exports.getTicket =async function(req,res)  {
     var count = 0;
     for (const queue of Queues) {
         if (queue.IdTicket.charAt(0)==c){
-            
             count =parseInt(queue.IdTicket.substr(1 , queue.IdTicket.length-1 ));
-
         }
-     
     }
     count++;
     count.toString();
     const tId =c+count;
     dao.getTicket(tId).then(
         result => {
-             return res.status(200).json(result);                       
+            return res.status(200).json(tId);                       
         },
         error => {
             return res.status(500).send(error);
         }
     )
-
 }
 
 //Input you id of ticket, get the length of queue before you
@@ -50,7 +46,6 @@ exports.getLength =async function(req,res)  {
             else res.status(200).json(counter);
         }
         }
-     
     }
 
 }
@@ -58,7 +53,7 @@ exports.getLength =async function(req,res)  {
 exports.getServices =async function(req,res)  {
     dao.getServices().then(
         result => {
-             return res.status(200).json(result);                       
+            return res.status(200).json(result);                       
         },
         error => {
             return res.status(500).send(error);
@@ -70,7 +65,7 @@ exports.getServices =async function(req,res)  {
 exports.clearQueues =async function(req,res)  {
     dao.deleteQueues().then(
         result => {
-             return res.status(200).json(result);                       
+            return res.status(200).json(result);                       
         },
         error => {
             return res.status(500).send(error);
