@@ -44,3 +44,21 @@ Table that saves each time a service is delivered and by who
 - IsServed: Boolean specifying whether the ticket called was served or absent
 
 The first three fields are primary key
+
+### Users:
+
+Mario Rossi:
+- email: mario.rossi@gmail.com
+- password: hello12
+- role: officier
+
+Paulina Knight:
+- email: paulina.knight@gmail.com
+- password: hello13
+- role: manager
+
+Carlene Ross:
+- email: carlene.ross@gmail.com
+- password: hello14
+- role: admin 
+

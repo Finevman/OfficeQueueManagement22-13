@@ -21,12 +21,12 @@ function LoginForm(props) {
     event.preventDefault();
     const credentials = { username, password };
 
-   /* props.login(credentials)
+    props.login(credentials)
       .then( () => navigate( oldPath ) )
       .catch((err) => { 
         setErrorMessage(err.error); setShow(true); 
       });
-      */
+      
   };
 
   return (
@@ -70,8 +70,15 @@ function LoginForm(props) {
 
 function LogoutButton(props) {
   return (
-        <Button variant="outline-light" onClick={props.logout}>Logout</Button>
+        <Button variant="outline-light" floating='right' onClick={props.logout}>Logout</Button>
+  )
+}
+function LoginButton() {
+  const navigate = useNavigate();
+  return (
+        <Button variant="outline-light" floating='right' onClick={()=> navigate('/login')}>Login</Button>
+        
   )
 }
 
-export { LoginForm, LogoutButton };
+export { LoginForm, LogoutButton, LoginButton };

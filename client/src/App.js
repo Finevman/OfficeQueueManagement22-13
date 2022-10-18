@@ -33,17 +33,15 @@ function App() {
   }, []);
 
   // If an error occurs, the error message will be shown in a toast.
-  const handleErrors = (err) => {
-    let msg = '';
-    if (err.error) msg = err.error;
-    else if (String(err) === "string") msg = String(err);
-    else msg = "Unknown Error";
+  const handleMessages = (msg) => {
+    console.log(msg)
     setMessage(msg); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
+    console.log(message)
   }
 
   return (
     <BrowserRouter>
-      <MessageContext.Provider value={{ handleErrors }}>
+      <MessageContext.Provider value={message}>
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
@@ -62,9 +60,8 @@ function Main() {
 /************AUTHENTICATION VARIABLES*****************/
 
 const [loggedIn, setLoggedIn] = useState(false);
-const [message, setMessage] = useState('');
 const [currentU, setCurrentU] = useState({});
-
+const [message, setMessage] = useContext(MessageContext);
 const location = useLocation();
 
 //*******CHECK_AUTH*******//
@@ -88,6 +85,7 @@ const handleLogin = async (credentials) => {
 
     setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
   } catch (err) {
+    console.log(err)
     if (err === 'Unauthorized') {
       setMessage({ msg: "Incorrect username or password", type: 'danger' });
     } else {
@@ -107,19 +105,16 @@ const handleLogout = async () => {
 //  setUserFilter(false);
   setMessage('');
 };
-
 /*****************************************************/
-
 return (
   <>
     <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
-         <Navigate to="/login" replace state={location} />
+         <DefaultLayout />
       } >
       </Route>
-
       <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
     </Routes>
   </>

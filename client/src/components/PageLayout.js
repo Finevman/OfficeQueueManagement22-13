@@ -11,27 +11,18 @@ import API from '../API';
  * Except when we are waiting for the data from the server, this layout is always rendered.
  * <Outlet /> component is replaced according to which route is matching the URL.
  */
-/*
+
 function DefaultLayout(props) {
 
-  const location = useLocation();
+  <Row className="vh-200">
+  <Col md={12} className="below-nav">
 
-  const { filterLabel } = useParams();
-  const filterId = filterLabel || (location.pathname === "/" && 'filter-all');
-
-  return (
-    <Row className="vh-100">
-      <Col md={4} bg="light" className="below-nav" id="left-sidebar">
-        <RouteFilters items={props.filters} selected={filterId} />
-      </Col>
-      <Col md={8} className="below-nav">
-        <Outlet />
-      </Col>
-    </Row>
-  );
+  </Col>
+</Row>
 
 }
 
+/*
 function MainLayout(props) {
 
   const [films, setFilms] = useState([]);
@@ -173,4 +164,4 @@ function LoadingLayout(props) {
 }
 
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, LoadingLayout };
+export { LoginLayout, LoadingLayout, DefaultLayout };

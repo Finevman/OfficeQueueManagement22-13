@@ -3,7 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import { Navbar, Nav, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { LogoutButton } from './Auth';
+import { LogoutButton, LoginButton } from './Auth';
 
 const Navigation = (props) => {
 
@@ -12,18 +12,18 @@ const Navigation = (props) => {
   }
 
   return (
-    <Navbar bg="primary" expand="sm" variant="dark" fixed="top" className="navbar-padding">
+    <Navbar bg="primary" expand="lg" variant="dark" fixed="top" className="justify-content-between">
       <Link to="/">
         <Navbar.Brand>
         <i className="bi bi-signpost-2-fill icon-size m-1"/> Office Queue Managment
         </Navbar.Brand>
       </Link>
-      <Nav className="ml-md-auto">
-        <Navbar.Text className="mt-1">
-          {props.user && props.user.name && `Welcome, ${props.user.name}!`}
+      <Nav>
+        <Navbar.Text className="mx-1">
+          {props.user && props.user.name && `Welcome, ${props.user.role ? props.user.role : ''} ${props.user.name}!`}
         </Navbar.Text>
-        <Form className="mx-2">
-          {props.loggedIn ? <LogoutButton logout={props.logout} /> : <></>}
+        <Form className="mx-1 ">
+          {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
         </Form>
       </Nav>
     </Navbar>

@@ -2,6 +2,7 @@
 
 const express = require('express');
 const dao = require('./DAO');
+const userDao = require('./user-dao.js');
 const QueuesRouter = require('./QueuesRouter');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
@@ -32,8 +33,8 @@ app.use(cors(corsOptions));
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
   //4 STEP PASSPORT-->getUser in the verify method-->vedi come implemento "getUser" nel "userDao"
-  const user = await dao.getUser(username, password)
-
+  const user = await userDao.getUser(username, password)
+  
   //4.4 STEP PASSPORT-->CALLBACK cb check if returned "user" is correct or not
   if (!user)
     return cb(null, false, 'Incorrect username or password.');
@@ -123,8 +124,24 @@ app.put(PREFIX + '/riddles/updateRiddleStatus/:id/:status', isLoggedIn, async (r
 */
 
 //SESSION
-app.post(PREFIX + '/sessions', passport.authenticate('local'), (req, res) => {
-  res.status(201).json(req.user);
+app.post(PREFIX + '/sessions', function(req, res, next) {
+  passport.authenticate('local', (err, user, info) => {
+  if (err)
+  return next(err);
+  if (!user) {
+    // display wrong login messages
+    return res.status(401).json({ error: info});
+  }
+  // success, perform the login and extablish a login session
+  req.login(user, (err) => {
+    if (err)
+      return next(err);
+    
+    // req.user contains the authenticated user, we send all the user info back
+    // this is coming from userDao.getUser() in LocalStratecy Verify Fn
+    return res.json(req.user); // WARN: returns 200 even if .status(200) is missing?
+  });
+})(req, res, next);
 });
 
 
