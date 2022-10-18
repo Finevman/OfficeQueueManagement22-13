@@ -18,10 +18,6 @@ function App() {
   const [message, setMessage] = useState('');
   const [services, setServices] = useState([])
 
-  function takeTicket(){
-    
-  }
-
   const ieServices = [{ServiceName:'Contabilidad', AverageTime:5}, //Dummy object <---------------------------------
                       {ServiceName:'Servicio al cliente', AverageTime:10},
                       {ServiceName:'Ventas', AverageTime:15}]; 
