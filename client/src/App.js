@@ -3,34 +3,58 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
-import { Container, Toast} from 'react-bootstrap/';
+import { Container, Row, Toast} from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { ServicesContainer } from './components/serviceCards';
+import { Officer, Officer_2 } from './components/officer';
 
 import MessageContext from './messageCtx';
 import API from './API';
+import { Button } from 'bootstrap';
 
 function App() {
 
   const [message, setMessage] = useState('');
   const [services, setServices] = useState([])
 
-  const ieServices = [{ServiceName:'Contabilidad', AverageTime:5}, //Dummy object <---------------------------------
-                      {ServiceName:'Servicio al cliente', AverageTime:10},
-                      {ServiceName:'Ventas', AverageTime:15}]; 
+  const handleErrors = (err) => {
+    let msg = '';
+    if (err.error) msg = err.error;
+    else if (String(err) === "string") msg = String(err);
+    else msg = "Unknown Error";
+    setMessage(msg); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
+  }
 
   //*******Initial query*******//
   useEffect(() => {
     async function fetchServices() {
-      // const fetchedServices = await API.getServices();
-      // setServices(fetchedServices);
-      setServices(ieServices)
+      try {
+        const fetchedServices = await API.getServices();
+        setServices(fetchedServices);
+      } catch (error) {
+        handleErrors(error);
+      }
+      
     }
     fetchServices();
   }, []);
+
+  //
+  async function takeTicket(service){
+    if (typeof service === 'string') {
+      try {
+        const tId = await API.takeTicket(service)
+        console.log(tId)
+      } catch (error) {
+        handleErrors(error)
+      }
+    } else {
+      handleErrors({error:"Service must be a valid string"})
+    }
+  }
 
   // If an error occurs, the error message will be shown in a toast.
   const handleMessages = (msg) => {
@@ -45,7 +69,7 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
-            <Route path="/serviceCards" element={<ServicesContainer services={services}/>} />
+            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{ message }</Toast.Body>
@@ -108,16 +132,24 @@ const handleLogout = async () => {
 /*****************************************************/
 return (
   <>
-    <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+
+    < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
          <DefaultLayout />
+         //<Navigate to="/login" replace state={location} />  
+         //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
       } >
       </Route>
-      <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
+      <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
+
+      <Route path="/officer" element={!loggedIn ?  <Officer_2 /> : <Navigate replace to='/' />} />
+      
+            
     </Routes>
   </>
+
 );
 }
 

@@ -62,3 +62,34 @@ Carlene Ross:
 - password: hello14
 - role: admin 
 
+## API
+
+#### GET /api/Services
+
+- **Get all existing services**.
+- **Response**: `200 OK` (success); body: List with service name and average required time.
+
+```
+[
+	{
+		"ServiceName": "Managment",
+		"AverageTime": 15
+	},
+	{
+		"ServiceName": "Accountant",
+		"AverageTime": 30
+	},
+	{
+		"ServiceName": "Help",
+		"AverageTime": 5
+	}
+]
+```
+
+- **Error responses**: `500 Internal Server Error` (generic error).
+
+#### POST /api/Ticket/:ServiceName
+
+- **Generate a new ticket**.
+- **Response**: `200 OK` (success); body: Value of the ticket ID i.e 'M12'.
+- **Error responses**: `500 Internal Server Error` (generic error).
