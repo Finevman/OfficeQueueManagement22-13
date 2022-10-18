@@ -3,6 +3,7 @@
 const express = require('express');
 const dao = require('./DAO');
 const QueuesRouter = require('./QueuesRouter');
+const userRouter = require('./userRouter');
 const cors = require('cors');
 const morgan = require('morgan'); // logging middleware
 const { validationResult, body, param } = require('express-validator');
@@ -27,6 +28,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/api',QueuesRouter);
+app.use('/api',userRouter);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
