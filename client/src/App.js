@@ -3,14 +3,16 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
-import { Container, Toast} from 'react-bootstrap/';
+import { Container, Row, Toast} from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
+import { Officer, Officer_2 } from './components/officer';
 
 import MessageContext from './messageCtx';
 import API from './API';
+import { Button } from 'bootstrap';
 
 function App() {
 
@@ -94,17 +96,24 @@ const handleLogout = async () => {
 
 return (
   <>
-    <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+
+    < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
-         <Navigate to="/login" replace state={location} />
+         <Navigate to="/login" replace state={location} />  
+        //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
       } >
       </Route>
 
-      <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
+      <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
+
+      <Route path="/officer" element={!loggedIn ?  <Officer_2 /> : <Navigate replace to='/' />} />
+      
+            
     </Routes>
   </>
+
 );
 }
 
