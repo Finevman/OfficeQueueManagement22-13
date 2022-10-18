@@ -261,8 +261,159 @@ function removeServiceFromCounter(idCounter, serviceName) {
 
 /*************SERVICES DATA FUNCTIONS************/
 
+function countCountersForEachService() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Counters_Services GROUP BY ServiceName';
+    db.get(sql, (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        resolve(false);
+      else
+        resolve(rows);
+    });
+  });
+}
+
+function countServicesForEachCounter() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Counters_Services GROUP BY IdCounter';
+    db.get(sql, (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        resolve(false);
+      else
+        resolve(rows);
+    });
+  });
+}
+
+function countServedTicket() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data WHERE IsServed=1';
+    db.get(sql, (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        resolve(false);
+      else
+        resolve(rows);
+    });
+  });
+}
+
+function countAbsentTicket() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data WHERE IsServed=0';
+    db.get(sql, (err, rows) => {
+      if (err)
+        reject(err);
+      else if (rows === undefined)
+        resolve(false);
+      else
+        resolve(rows);
+    });
+  });
+}
+
+function numberOfTicketByHour() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY HOUR(DateTime)';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfTicketByHourAndService() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY HOUR(DateTime), ServiceName';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfTicketByDay() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY DAY(DateTime)';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfTicketByDayAndService() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY DAY(DateTime), ServiceName';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfTicketByMonth() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY MONTH(DateTime)';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfTicketByMonthAndService() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(*) FROM Service_Data GROUP BY MONTH(DateTime), ServiceName';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function numberOfServicesByDay() {
+  return new Promise((resolve, reject) => {
+    const sql = 'SELECT COUNT(DISTINCT ServiceName) FROM Service_Data GROUP BY DAY(DateTime)';
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+
 module.exports = {
   readUsers, addUser, updateUserRole, deleteUser, readServices, addService, updateServiceName, deleteService,
   readTicketsToBeServed, addCounter, deleteCounter, readCounters, getCounterByService, getServiceByCounter,
-  addServiceToCounter, removeServiceFromCounter, ticketServed, updateServiceTime, newTicket
+  addServiceToCounter, removeServiceFromCounter, ticketServed, updateServiceTime, newTicket,
+  countCountersForEachService, countServicesForEachCounter, countServedTicket, countAbsentTicket,
+  numberOfTicketByHour, numberOfTicketByDay, numberOfTicketByMonth, numberOfTicketByHourAndService, numberOfTicketByDayAndService, numberOfTicketByMonthAndService,
+  numberOfServicesByDay
 };
