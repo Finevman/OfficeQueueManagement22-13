@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
+import { ServicesContainer } from './components/serviceCards';
 import { Officer, Officer_2 } from './components/officer';
 
 import MessageContext from './messageCtx';
@@ -17,6 +18,36 @@ import { Button } from 'bootstrap';
 function App() {
 
   const [message, setMessage] = useState('');
+  const [services, setServices] = useState([])
+
+  //*******Initial query*******//
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const fetchedServices = await API.getServices();
+        setServices(fetchedServices);
+      } catch (error) {
+        handleErrors(error);
+      }
+      
+    }
+    fetchServices();
+  }, []);
+
+  //
+  async function takeTicket(service){
+    if (typeof service === 'string') {
+      try {
+        const tId = await API.takeTicket(service)
+        console.log(tId)
+      } catch (error) {
+        handleErrors(error)
+      }
+    } else {
+      handleErrors({error:"Service must be a valid string"})
+    }
+  }
+
   // If an error occurs, the error message will be shown in a toast.
   const handleErrors = (err) => {
     let msg = '';
@@ -32,6 +63,7 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
+            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{ message }</Toast.Body>
