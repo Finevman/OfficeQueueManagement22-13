@@ -259,8 +259,6 @@ function removeServiceFromCounter(idCounter, serviceName) {
   });
 }
 
-/*************SERVICES DATA FUNCTIONS************/
-
 function countCountersForEachService() {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT COUNT(*) FROM Counters_Services GROUP BY ServiceName';
@@ -288,6 +286,8 @@ function countServicesForEachCounter() {
     });
   });
 }
+
+/*************SERVICES DATA FUNCTIONS************/
 
 function countServedTicket() {
   return new Promise((resolve, reject) => {

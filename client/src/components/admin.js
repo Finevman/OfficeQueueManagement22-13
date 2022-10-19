@@ -1,4 +1,4 @@
-import { Table } from "react-bootstrap";
+import { Table, Collapse } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState, useEffect } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -27,7 +27,7 @@ function Admin() {
     );
   }
 
-  async function addUser(user) {    //to give to newUserForm component
+  async function addUser(user) {
     try {
       await API.addUser(user);
       setUsers((oldUsers) => [...oldUsers, user]);
@@ -68,12 +68,13 @@ function Admin() {
   return (
     <>
       <div style={{ fontSize: 45, width: "100%" }}>Admin Page</div>
-      <UserList users={users} changeRole={changeRole} deleteUser={deleteUser} />
+      <UserList users={users} changeRole={changeRole} deleteUser={deleteUser} addUser={addUser} />
     </>
   );
 }
 
 function UserList(props) {  // list of user take by props
+  const [showInfo, setShowInfo] = useState(false);
   return (
     <>
       <div style={{ fontSize: 35, width: "100%" }}>All Users</div>
@@ -100,12 +101,10 @@ function UserList(props) {  // list of user take by props
           }
         </tbody>
       </Table>
-      <PlusCircleFill
-        style={{}}
-        size={40}
-        //onClick={() => navigate("/add")}  //route form newUserForm
-        fill={"#0d6efd"}
-      /> </>
+      <PlusCircleFill variant="info" /*fill={"#0d6efd"}*/ onClick={() => setShowInfo(!showInfo)}>Add New User</PlusCircleFill>
+      <Collapse in={showInfo}>
+        <newUserForm addUser={props.addUser} />
+      </Collapse> </>
   );
 }
 

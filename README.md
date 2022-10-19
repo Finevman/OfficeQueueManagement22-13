@@ -45,7 +45,57 @@ Table that saves each time a service is delivered and by who
 
 The first three fields are primary key
 
-### Users:
+## Dao Documentation
+
+### Users functions
+
+- **readUsers()**, returns a list of every user with every field
+- **addUser(name, lastname, email, password, salt, role)**, inserts a user in the database, with the relative arguments. The password is already hashed
+- **updateUserRole(id, role)**, updates the user associated with the argument *id* with the argument *role*
+- **deleteUser(id)**, deletes the user associated with the argument *id*
+
+### Services functions
+
+- **readServices()**, returns a list of every service with every field
+- **addService(service)**, inserts the object service to the database. The argument *service*, is an object with a *name* and a *averageTime* field
+- **updateServiceName(oldName, newName)**, updates the service identified by *oldName* with the *newName*
+- **updateServiceTime(name, time)**, updates the service *name* with the new *time*
+- **deleteService(name)**, deletes the service *name*
+
+### Counters functions
+
+- **readCounters()**, returns a list of every counter with every field
+- **addCounter(id)**, inserts the counter with the specified *id*
+- **deleteCounter(id)**, deletes the counter with the specified *id*
+
+### Queues functions
+
+- **readTicketsToBeServed()**, returns a list of all the tickets with the IsCalled field equal to 0/false (the tickets are yet to be called by a counter)
+- **newTicket(IdTicket)**, inserts the ticket *IdTicket* into the queue, with IsCalled = 0 by default
+- **ticketServed(IdTicket)**, updates the IsCalled field of the ticket *IdTicket* to 1/true (the ticket has been called by a counter)
+
+### Counters_Services functions
+
+- **getCounterByService(serviceName)**, returns a list of counters that provide the service *serviceName*
+- **getServiceByCounter(idCounter)**, returns a list of services provided by the counter *idCounter*
+- **addServiceToCounter(idCounter, serviceName)**, associates *serviceName* to the counter *idCounter*
+- **removeServiceFromCounter(idCounter, serviceName)**, deletes the association between the *serviceName* and the counter *idCounter*
+- **countCountersForEachService()**, returns the number of counters that provide each service
+- **countServicesForEachCounter()**, returns the number of services provided by each counter
+
+### Service_Data functions
+
+- **countServedTicket()**, returns the number of tickets that have been served 
+- **countAbsentTicket()**, returns the number of tickets that were not present when they where called to be served
+- **numberOfTicketByHour()**, returns the number of tickets served each hour
+- **numberOfTicketByHourAndService()**, returns the number of tickets served each hour and the service they required
+- **numberOfTicketByDay()**, returns the number of tickets served each day
+- **numberOfTicketsByDayAndService()**, returns the number of tickets served each day and the service they required
+- **numberOfTicketByMonth()**, returns the number of tickets served each month
+- **numberOfTicketByMonthAndService()**, returns the number of tickets served each month and the service they required
+- **numberOfServicesByDay()**, returns the number of services provided each day
+
+## Users
 
 Mario Rossi:
 - email: mario.rossi@gmail.com
