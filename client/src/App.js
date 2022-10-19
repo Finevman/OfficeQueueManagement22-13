@@ -6,10 +6,11 @@ import React, { useState, useEffect, useContext, } from 'react';
 import { Container, Row, Toast} from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
-import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
+import { DefaultLayout, LoginLayout, LoadingLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { ServicesContainer } from './components/serviceCards';
 import { Officer, Officer_2 } from './components/officer';
+import {Admin} from './components/admin'
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -18,7 +19,7 @@ import { Button } from 'bootstrap';
 function App() {
 
   const [message, setMessage] = useState('');
-  const [services, setServices] = useState([])
+
 
   const handleErrors = (err) => {
     let msg = '';
@@ -28,33 +29,9 @@ function App() {
     setMessage(msg); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
   }
 
-  //*******Initial query*******//
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        const fetchedServices = await API.getServices();
-        setServices(fetchedServices);
-      } catch (error) {
-        handleErrors(error);
-      }
-      
-    }
-    fetchServices();
-  }, []);
 
   //
-  async function takeTicket(service){
-    if (typeof service === 'string') {
-      try {
-        const tId = await API.takeTicket(service)
-        console.log(tId)
-      } catch (error) {
-        handleErrors(error)
-      }
-    } else {
-      handleErrors({error:"Service must be a valid string"})
-    }
-  }
+
 
   // If an error occurs, the error message will be shown in a toast.
   const handleMessages = (msg) => {
@@ -69,7 +46,6 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
-            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{ message }</Toast.Body>
@@ -87,6 +63,7 @@ const [loggedIn, setLoggedIn] = useState(false);
 const [currentU, setCurrentU] = useState({});
 const [message, setMessage] = useContext(MessageContext);
 const location = useLocation();
+const {handleErrors} = useContext(MessageContext);
 
 //*******CHECK_AUTH*******//
 useEffect(() => {
@@ -97,6 +74,8 @@ useEffect(() => {
   };
   checkAuth();
 }, [loggedIn]);
+
+
 //***********************//
 
 //********HANDLE_LOGIN*******//
@@ -137,15 +116,15 @@ return (
 
     <Routes>
       <Route path="/" element={
+          loggedIn && currentU.role=='Officer' ? <OfficerLayout/> :
+          loggedIn && currentU.role=='Admin' ? <AdminLayout/> :
          <DefaultLayout />
-         //<Navigate to="/login" replace state={location} />  
-         //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
+
+        //<Navigate to="/login" replace state={location} />  
+        //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
       } >
       </Route>
       <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
-
-      <Route path="/officer" element={!loggedIn ?  <Officer_2 /> : <Navigate replace to='/' />} />
-      
             
     </Routes>
   </>
