@@ -66,11 +66,11 @@ function Main() {
 
   const {handleErrors} = useContext(MessageContext);
 
-  API.getAllUsers()
+/*  API.getAllUsers()
       .then((users) => {
         setUsers(users);
       }).catch(err => handleErrors(err));
-
+*/
   //*******CHECK_AUTH*******//
   useEffect(() => {
     const checkAuth = async () => {
@@ -116,7 +116,7 @@ function Main() {
   return (
     <>
 
-      < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+    <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
