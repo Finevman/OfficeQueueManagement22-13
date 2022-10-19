@@ -21,8 +21,8 @@ function UserForm(props) {
 			let newUser;
 			if (lastname.trim().length !== 0) {
 				if (email.trim().length !== 0) {
-					if (role.trim().length !== 0 && (role.toLocaleLowerCase() == "manager" || role.toLocaleLowerCase() == "officier")) {
-						newUser = { name: name, lastname: lastname, email: email, password: password, role: role };
+					if (role.trim().length !== 0 && (role.toLowerCase() === "manager" || role.toLowerCase() === "officier")) {
+						newUser = { name: name, lastname: lastname, email: email, password: password, role: role.toLowerCase() };
 					} else {
 						setErrorMsg("Error: Enter a valid role.");
 						return;
@@ -88,7 +88,7 @@ function UserForm(props) {
 					></Form.Control>
 				</Form.Group>
 				<Button type='submit'>Save</Button>
-				<Button onClick={() => navigate('/')}>Cancel</Button>
+				<Button onClick={props.cancel}>Cancel</Button>
 			</Form>
 		</>
 	);

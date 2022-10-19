@@ -1,11 +1,12 @@
-import { Table, Collapse } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState, useEffect } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import API from "../API";
-import { Trash3, PlusCircleFill } from "react-bootstrap-icons";
+import { Trash3 } from "react-bootstrap-icons";
 import { toast } from "react-toastify";
+import { UserForm } from "./newUserForm";
 
 function Admin() {
   const [users, setUsers] = useState([]);
@@ -73,8 +74,8 @@ function Admin() {
   );
 }
 
-function UserList(props) {  // list of user take by props
-  const [showInfo, setShowInfo] = useState(false);
+function UserList(props) { 
+  const [showForm, setShowForm] = useState(false);
   return (
     <>
       <div style={{ fontSize: 35, width: "100%" }}>All Users</div>
@@ -101,10 +102,8 @@ function UserList(props) {  // list of user take by props
           }
         </tbody>
       </Table>
-      <PlusCircleFill variant="info" /*fill={"#0d6efd"}*/ onClick={() => setShowInfo(!showInfo)}>Add New User</PlusCircleFill>
-      <Collapse in={showInfo}>
-        <newUserForm addUser={props.addUser} />
-      </Collapse> </>
+      {(!showForm) ? <Button onClick={() => setShowForm(true)}>Add New User</Button> :
+        <UserForm cancel={() => setShowForm(false) } />} </>
   );
 }
 
@@ -112,8 +111,8 @@ function UserRow(props) {
   return (
     <>
       <tr>
-        <UserActions user={props.user} changeRole={props.changeRole} deleteUser={props.deleteUser} />
         <UserData user={props.user} />
+        <UserActions user={props.user} changeRole={props.changeRole} deleteUser={props.deleteUser} />
       </tr>
     </>
   );
@@ -140,8 +139,8 @@ function UserActions(props) {
     <>
       <td className="col-2">
         <DropdownButton id="dropdown-basic-button" title="Change Role" onSelect={ev => props.changeRole(props.user, ev)}>
-          <Dropdown.Item eventKey="option-1">Officer</Dropdown.Item>
-          <Dropdown.Item eventKey="option-2">Manager</Dropdown.Item>
+          <Dropdown.Item eventKey="officer">Officer</Dropdown.Item>
+          <Dropdown.Item eventKey="manager">Manager</Dropdown.Item>
         </DropdownButton>
       </td>
       <td className="col-1">
