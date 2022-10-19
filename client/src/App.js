@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { ServicesContainer } from './components/serviceCards';
-import { Officer, Officer_2 } from './components/officer';
+import { Officer } from './components/officer';
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -70,7 +70,12 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
+<<<<<<< HEAD
+            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
+            <Route path="/officer" element={<Officer/>} />
+=======
             <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket} />} />
+>>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
@@ -142,6 +147,22 @@ function Main() {
 
       < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
+<<<<<<< HEAD
+    <Routes>
+      <Route path="/" element={
+         //<DefaultLayout />
+         <Navigate to="/login" replace state={location} />  
+         //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
+      } >
+      </Route>
+      <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
+
+      <Route path="/officer" element={ <Officer/>} />
+      
+            
+    </Routes>
+  </>
+=======
       <Routes>
         <Route path="/" element={
           <DefaultLayout />
@@ -152,6 +173,7 @@ function Main() {
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
 
         <Route path="/officer" element={!loggedIn ? <Officer_2 /> : <Navigate replace to='/' />} />
+>>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
 
         <Route path="/admin" element={<Admin users={users} changeRole={changeRole}/>} />
 

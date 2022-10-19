@@ -1,28 +1,22 @@
-import { Button, Col } from "react-bootstrap";
+import { Button, ButtonGroup, Col, FormGroup, FormLabel } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import {Row} from "react-bootstrap";
+
 
 
 function Officer(){
     return(
-        <Col className="vh-200">
-            <Row><div style={{ fontSize: 45, width: "100%" }}>Officer Page</div></Row>
-            <Row><th> Ticket Number </th></Row>
-            <Row><Button> Served</Button></Row>
-            <Row><Button> Absent</Button></Row>        
-        </Col>
+        <FormGroup id='officer_options' style={{padding:'100px', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
+            <FormLabel style={{ fontSize: 45, width: "100%"}}>Welcome Officer n°xxx</FormLabel>
+            <FormLabel style={{ fontSize: 65, fontWeight:'bold',width: "100%", paddingTop:'40px'}}>Ticket Number</FormLabel>
+            <ButtonGroup style={{paddingTop: '70px', justifyContent:'space-between'}}>
+                <Button style={{fontSize: 25, background:'green'}}> Served</Button>
+                <Button style={{fontSize: 25, background:'red'}}> Absent</Button>
+            </ButtonGroup>
+                   
+        </FormGroup>
     );
 }
 
-function Officer_2(props) {
-    return (
-      <Row className="vh-200">
-        <Col md={12} className="below-nav">
-            HELLOOOO
-        </Col>
-      </Row>
-    );
-  }
 
 
-export {Officer, Officer_2};
+export {Officer};
