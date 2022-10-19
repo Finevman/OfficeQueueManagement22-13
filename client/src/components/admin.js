@@ -103,7 +103,7 @@ function UserList(props) {
         </tbody>
       </Table>
       {(!showForm) ? <Button onClick={() => setShowForm(true)}>Add New User</Button> :
-        <UserForm cancel={() => setShowForm(false) } />} </>
+        <UserForm cancel={() => setShowForm(false) } addUser={props.addUser} />} </>
   );
 }
 

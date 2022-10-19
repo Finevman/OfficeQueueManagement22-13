@@ -1,4 +1,5 @@
 const APIURL = 'http://localhost:3001/api/v0';
+const URL = 'http://localhost:3001/api';
 
 
 function getJson(httpResponsePromise) {
@@ -92,7 +93,7 @@ async function takeTicket(service) {
 
 async function getAllUsers() {
   return new Promise((resolve, reject) => {
-		fetch(APIURL + '/User')
+		fetch(URL + '/User')
 			.then((response) => {
 				if (response.ok) {
 					response.json()
@@ -115,7 +116,7 @@ async function getAllUsers() {
 
 function deleteUser(user) { 
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User/' + user.id, {
+    fetch(URL + '/User/' + user.id, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -135,7 +136,7 @@ function deleteUser(user) {
 
 function updateUserRole(user, newRole) {
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User', {
+    fetch(URL + '/User', {
       method: 'PUT',
       credentials: 'include',
       headers: {
@@ -156,7 +157,7 @@ function updateUserRole(user, newRole) {
 
 function addUser(user) {
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User', {
+    fetch(URL + '/User', {
       method: 'POST',
       credentials: 'include',
       headers: {
