@@ -3,7 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
-import { Container, Row, Toast} from 'react-bootstrap/';
+import { Container, Row, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
@@ -14,11 +14,12 @@ import { Officer } from './components/officer';
 import MessageContext from './messageCtx';
 import API from './API';
 import { Button } from 'bootstrap';
+import { Admin } from './components/admin';
 
 function App() {
 
   const [message, setMessage] = useState('');
-  const [services, setServices] = useState([])
+  const [services, setServices] = useState([]);
 
   const handleErrors = (err) => {
     let msg = '';
@@ -37,13 +38,13 @@ function App() {
       } catch (error) {
         handleErrors(error);
       }
-      
+
     }
     fetchServices();
   }, []);
 
   //
-  async function takeTicket(service){
+  async function takeTicket(service) {
     if (typeof service === 'string') {
       try {
         const tId = await API.takeTicket(service)
@@ -52,7 +53,7 @@ function App() {
         handleErrors(error)
       }
     } else {
-      handleErrors({error:"Service must be a valid string"})
+      handleErrors({ error: "Service must be a valid string" })
     }
   }
 
@@ -69,73 +70,84 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
+<<<<<<< HEAD
             <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
             <Route path="/officer" element={<Officer/>} />
+=======
+            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket} />} />
+>>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
-            <Toast.Body>{ message }</Toast.Body>
+            <Toast.Body>{message}</Toast.Body>
           </Toast>
         </Container>
       </MessageContext.Provider>
     </BrowserRouter>
-  ) 
+  )
 }
 
 function Main() {
-/************AUTHENTICATION VARIABLES*****************/
+  /************AUTHENTICATION VARIABLES*****************/
 
-const [loggedIn, setLoggedIn] = useState(false);
-const [currentU, setCurrentU] = useState({});
-const [message, setMessage] = useContext(MessageContext);
-const location = useLocation();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [currentU, setCurrentU] = useState({});
+  const [message, setMessage] = useContext(MessageContext);
+  const location = useLocation();
+  const [users, setUsers] = useState([]);
 
-//*******CHECK_AUTH*******//
-useEffect(() => {
-  const checkAuth = async () => {
-    const user_curr = await API.getUserInfo(); // we have the user info here
-    user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
-    setCurrentU(user_curr);
-  };
-  checkAuth();
-}, [loggedIn]);
-//***********************//
+  API.getAllUsers()
+      .then((users) => {
+        setUsers(users);
+      }).catch(err => handleErrors(err));
 
-//********HANDLE_LOGIN*******//
-const handleLogin = async (credentials) => {
-  try {
-    const user = await API.logIn(credentials);
-    setLoggedIn(true);
-    setCurrentU(user);
-    //setUserFilter(false);
+  //*******CHECK_AUTH*******//
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user_curr = await API.getUserInfo(); // we have the user info here
+      user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
+      setCurrentU(user_curr);
+    };
+    checkAuth();
+  }, [loggedIn]);
+  //***********************//
 
-    setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
-  } catch (err) {
-    console.log(err)
-    if (err === 'Unauthorized') {
-      setMessage({ msg: "Incorrect username or password", type: 'danger' });
-    } else {
-      setMessage({ msg: "Server problem, please try again or contact assistance", type: 'danger' });
+  //********HANDLE_LOGIN*******//
+  const handleLogin = async (credentials) => {
+    try {
+      const user = await API.logIn(credentials);
+      setLoggedIn(true);
+      setCurrentU(user);
+      //setUserFilter(false);
+
+      setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
+    } catch (err) {
+      console.log(err)
+      if (err === 'Unauthorized') {
+        setMessage({ msg: "Incorrect username or password", type: 'danger' });
+      } else {
+        setMessage({ msg: "Server problem, please try again or contact assistance", type: 'danger' });
+      }
     }
-  }
-};
-//*****************************//
+  };
+  //*****************************//
 
-//********HANDLE_LOGOUT*******//
-const handleLogout = async () => {
-  await API.logOut();
-  setLoggedIn(false);
+  //********HANDLE_LOGOUT*******//
+  const handleLogout = async () => {
+    await API.logOut();
+    setLoggedIn(false);
 
-  //BEST PRACTISE after Logout-->Clean up everything!
-  setCurrentU({});
-//  setUserFilter(false);
-  setMessage('');
-};
-/*****************************************************/
-return (
-  <>
+    //BEST PRACTISE after Logout-->Clean up everything!
+    setCurrentU({});
+    //  setUserFilter(false);
+    setMessage('');
+  };
+  /*****************************************************/
+  return (
+    <>
 
-    < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+      < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
+<<<<<<< HEAD
     <Routes>
       <Route path="/" element={
          //<DefaultLayout />
@@ -150,8 +162,25 @@ return (
             
     </Routes>
   </>
+=======
+      <Routes>
+        <Route path="/" element={
+          <DefaultLayout />
+          //<Navigate to="/login" replace state={location} />  
+          //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
+        } >
+        </Route>
+        <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
 
-);
+        <Route path="/officer" element={!loggedIn ? <Officer_2 /> : <Navigate replace to='/' />} />
+>>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
+
+        <Route path="/admin" element={<Admin users={users} changeRole={changeRole}/>} />
+
+      </Routes>
+    </>
+
+  );
 }
 
 export default App;
