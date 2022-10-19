@@ -29,7 +29,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use('/api',QueuesRouter);
-app.use(PREFIX,userRouter);
+app.use('/api',userRouter);
 
 //2 STEP PASSPORT-->Passport: set up local strategy-->TODO in USER-DAO
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
