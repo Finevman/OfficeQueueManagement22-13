@@ -3,13 +3,83 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import newUserForm from './newUserForm';
+import API from "../API";
+import { Trash3, PlusCircleFill } from "react-bootstrap-icons";
 
-function Admin(props) {
+const [users, setUsers] = useState([]);
+const [dirty, setDirty] = useState(false);
+
+useEffect(() => {
+  API.getAllUsers()
+    .then((users) => {
+      setUsers(users);
+      setDirty(false);
+    }).catch(err => handleError(err));
+}, [dirty]);
+
+async function addUser(user) {    //to give to newUserForm component
+  try {
+    await API.addUser(user);
+    setUsers((oldUsers) => [...oldUsers, user]);
+    setDirty(true);
+    toast.success("User added", { position: "top-center" }, { toastId: 3 });
+  } catch (err) {
+    toast.error(
+      err.error.message,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+  }
+}
+
+async function deleteUser(user) {
+  try {
+    await API.deleteUser(user);
+    setUsers(users.filter((u) => u.id !== user.id));
+    setDirty(true);
+    toast.success("User deleted", { position: "top-center" }, { toastId: 3 });
+  } catch (err) {
+    toast.error(
+      err.error.message,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+  }
+}
+
+async function changeRole(user, newRole) {
+  let userToUpdate = users.find((u) => u.id === user.id);
+  try {
+    await API.updateUserRole(user, newRole);
+    setUsers((users) =>
+      users.map((u) =>
+        u.id === userToUpdate.id
+          ? Object.assign({}, userToUpdate)
+          : u
+      )
+    );
+    setDirty(true);
+    toast.success(
+      "User succesfully modified",
+      { position: "top-center" },
+      { toastId: 3 }
+    );
+  } catch (err) {
+    toast.error(
+      err.error.message,
+      {
+        position: "top-center",
+      },
+      { toastId: 11 }
+    );
+  }
+}
+
+function Admin() {
   return (
     <>
       <div style={{ fontSize: 45, width: "100%" }}>Admin Page</div>
-      <UserList users={props.users} changeRole={props.changeRole} addUser={props.addUser} deleteUser={props.deleteUser} />
+      <UserList users={users} changeRole={changeRole} deleteUser={deleteUser} />
     </>
   );
 }
@@ -41,7 +111,12 @@ function UserList(props) {  // list of user take by props
           }
         </tbody>
       </Table>
-      <newUserForm addUser={props.addUser}/> </>
+      <PlusCircleFill
+        style={{}}
+        size={40}
+        onClick={() => navigate("/add")}  //route form newUserForm
+        fill={"#0d6efd"}
+      /> </>
   );
 }
 
@@ -93,9 +168,9 @@ const OPACITY_WHEN_MOUSE_INTERACT = 0.6;
 const NORMAL_OPACITY = 0.85;
 
 const DeleteIcon = (props) => {
-  /*const [opacity, setOpacity] = useState(NORMAL_OPACITY);
+  const [opacity, setOpacity] = useState(NORMAL_OPACITY);
   return (
-    /*<Trash3
+    <Trash3
       fontSize={17}
       style={{ marginBottom: 2 }}
       onClick={props.onDelete}
@@ -105,7 +180,7 @@ const DeleteIcon = (props) => {
       onMouseDown={() => setOpacity(1)}
       onMouseUp={() => setOpacity(OPACITY_WHEN_MOUSE_INTERACT)}
     />
-  );*/
+  );
 };
 
 export { Admin };
