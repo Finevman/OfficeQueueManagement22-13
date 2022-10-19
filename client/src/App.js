@@ -19,29 +19,15 @@ function App() {
 
   const [message, setMessage] = useState('');
 
-
   const handleErrors = (err) => {
-    let msg = '';
-    if (err.error) msg = err.error;
-    else if (String(err) === "string") msg = String(err);
-    else msg = "Unknown Error";
-    setMessage(msg); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
+    setMessage(err.error); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
   }
-
 
   //
-
-
-  // If an error occurs, the error message will be shown in a toast.
-  const handleMessages = (msg) => {
-    console.log(msg)
-    setMessage(msg); // WARN: a more complex application requires a queue of messages. In this example only last error is shown.
-    console.log(message)
-  }
  //DO NOT IMPLEMENTS ROUTE HERE
   return (
     <BrowserRouter>
-      <MessageContext.Provider value={message}>
+      <MessageContext.Provider value={{handleErrors}}>
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
@@ -60,7 +46,6 @@ function Main() {
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentU, setCurrentU] = useState({});
-  const [message, setMessage] = useContext(MessageContext);
   const location = useLocation();
 
   const {handleErrors} = useContext(MessageContext);
@@ -68,9 +53,15 @@ function Main() {
   //*******CHECK_AUTH*******//
   useEffect(() => {
     const checkAuth = async () => {
-      const user_curr = await API.getUserInfo(); // we have the user info here
-      user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
-      setCurrentU(user_curr);
+      try{
+        const user_curr = await API.getUserInfo(); // we have the user info here
+        user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
+        setCurrentU(user_curr);
+      }catch(err){
+        handleErrors(err); // mostly unauthenticated user, thus set not logged in
+        setCurrentU({});
+        setLoggedIn(false);
+      }
     };
     checkAuth();
   }, [loggedIn]);
@@ -84,14 +75,9 @@ function Main() {
       setCurrentU(user);
       //setUserFilter(false);
 
-      setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
+      //handleMessages({ msg: `Welcome ${user.name}`, type: 'success' });
     } catch (err) {
-      console.log(err)
-      if (err === 'Unauthorized') {
-        setMessage({ msg: "Incorrect username or password", type: 'danger' });
-      } else {
-        setMessage({ msg: "Server problem, please try again or contact assistance", type: 'danger' });
-      }
+      throw err
     }
   };
   //*****************************//
@@ -104,7 +90,7 @@ function Main() {
     //BEST PRACTISE after Logout-->Clean up everything!
     setCurrentU({});
     //  setUserFilter(false);
-    setMessage('');
+    //setMessage('');
   };
   /*****************************************************/
   return (

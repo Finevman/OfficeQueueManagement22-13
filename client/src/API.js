@@ -1,24 +1,45 @@
 const APIURL = 'http://localhost:3001/api/v0';
 
+
+function getJson(httpResponsePromise) {
+	// server API always return JSON, in case of error the format is the following { error: <message> } 
+	return new Promise((resolve, reject) => {
+	  httpResponsePromise
+		.then((response) => {
+		  if (response.ok) {
+  
+		   // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
+		   response.json()
+			  .then( json => resolve(json) )
+			  .catch( err => reject({ error: "Cannot parse server response" }))
+  
+		  } else {
+			// analyzing the cause of error
+			response.json()
+			  .then(obj => 
+				reject(obj)
+				) // error msg in the response body
+			  .catch(err => reject({ error: "Cannot parse server response" })) // something else
+		  }
+		})
+		.catch(err => 
+		  reject({ error: "Cannot communicate"  })
+		) // connection error
+	});
+  }
+
 /*************************AUTHENTICATION API**********************/
 
 const logIn = async (credentials) => {
-	const response = await fetch(APIURL + '/sessions', {
+	return getJson( fetch(APIURL + '/sessions', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		credentials: 'include',
 		body: JSON.stringify(credentials),
-	});
-	if (response.ok) {
-		const user = await response.json();
-		return user;
-	}
-	else {
-		const errDetails = await response.text();
-		throw errDetails;
-	}
+	})
+	)
 };
 
 const guest = { id: 0, name: 'Guest' }; //Dummy object in case of error
@@ -49,35 +70,22 @@ const logOut = async () => {
 /*************************SERVICES API**********************/
 
 async function getServices() {
-	const res = await fetch('http://localhost:3001' + '/api/services', {
+
+	return getJson(fetch('http://localhost:3001' + '/api/services', {
 		method: 'GET',
 		credentials: 'include',
-	});
-	if (res.ok) {
-		const studyPlan = await res.json();
-		return studyPlan;
-	} else {
-		const err = await res.text();
-		// console.log(err)
-		throw err;
-	}
+	})
+	)
 }
 
 /*************************TICKET API**********************/
 
 async function takeTicket(service) {
-	const res = await fetch('http://localhost:3001' + '/api/Ticket/' + service, {
+	return getJson( fetch('http://localhost:3001' + '/api/Ticket/' + service, {
 		method: 'POST',
 		credentials: 'include',
-	});
-	if (res.ok) {
-		const tId = await res.json();
-		return tId;
-	} else {
-		const err = await res.text();
-		// console.log(err)
-		throw err;
-	}
+	})
+	)
 }
 
 /*************************ADMIN API**********************/
