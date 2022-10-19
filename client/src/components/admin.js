@@ -1,81 +1,70 @@
 import { Table } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import API from "../API";
 import { Trash3, PlusCircleFill } from "react-bootstrap-icons";
-
-const [users, setUsers] = useState([]);
-const [dirty, setDirty] = useState(false);
-
-useEffect(() => {
-  API.getAllUsers()
-    .then((users) => {
-      setUsers(users);
-      setDirty(false);
-    }).catch(err => handleError(err));
-}, [dirty]);
-
-async function addUser(user) {    //to give to newUserForm component
-  try {
-    await API.addUser(user);
-    setUsers((oldUsers) => [...oldUsers, user]);
-    setDirty(true);
-    toast.success("User added", { position: "top-center" }, { toastId: 3 });
-  } catch (err) {
-    toast.error(
-      err.error.message,
-      { position: "top-center" },
-      { toastId: 12 }
-    );
-  }
-}
-
-async function deleteUser(user) {
-  try {
-    await API.deleteUser(user);
-    setUsers(users.filter((u) => u.id !== user.id));
-    setDirty(true);
-    toast.success("User deleted", { position: "top-center" }, { toastId: 3 });
-  } catch (err) {
-    toast.error(
-      err.error.message,
-      { position: "top-center" },
-      { toastId: 12 }
-    );
-  }
-}
-
-async function changeRole(user, newRole) {
-  let userToUpdate = users.find((u) => u.id === user.id);
-  try {
-    await API.updateUserRole(user, newRole);
-    setUsers((users) =>
-      users.map((u) =>
-        u.id === userToUpdate.id
-          ? Object.assign({}, userToUpdate)
-          : u
-      )
-    );
-    setDirty(true);
-    toast.success(
-      "User succesfully modified",
-      { position: "top-center" },
-      { toastId: 3 }
-    );
-  } catch (err) {
-    toast.error(
-      err.error.message,
-      {
-        position: "top-center",
-      },
-      { toastId: 11 }
-    );
-  }
-}
+import { toast } from "react-toastify";
 
 function Admin() {
+  const [users, setUsers] = useState([]);
+  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    API.getAllUsers()
+      .then((users) => {
+        setUsers(users);
+        setDirty(false);
+      }).catch(err => handleError(err));
+  }, [dirty]);
+
+  function handleError(err) {
+    toast.error(
+      err.error,
+      { position: "top-center" },
+      { toastId: 12 }
+    );
+  }
+
+  async function addUser(user) {    //to give to newUserForm component
+    try {
+      await API.addUser(user);
+      setUsers((oldUsers) => [...oldUsers, user]);
+      setDirty(true);
+      toast.success("User added", { position: "top-center" }, { toastId: 3 });
+    } catch (err) { handleError(err) }
+  }
+
+  async function deleteUser(user) {
+    try {
+      await API.deleteUser(user);
+      setUsers(users.filter((u) => u.id !== user.id));
+      setDirty(true);
+      toast.success("User deleted", { position: "top-center" }, { toastId: 3 });
+    } catch (err) { handleError(err) }
+  }
+
+  async function changeRole(user, newRole) {
+    let userToUpdate = users.find((u) => u.id === user.id);
+    try {
+      await API.updateUserRole(user, newRole);
+      setUsers((users) =>
+        users.map((u) =>
+          u.id === userToUpdate.id
+            ? Object.assign({}, userToUpdate)
+            : u
+        )
+      );
+      setDirty(true);
+      toast.success(
+        "User succesfully modified",
+        { position: "top-center" },
+        { toastId: 3 }
+      );
+    } catch (err) { handleError(err) }
+  }
+
   return (
     <>
       <div style={{ fontSize: 45, width: "100%" }}>Admin Page</div>
@@ -114,7 +103,7 @@ function UserList(props) {  // list of user take by props
       <PlusCircleFill
         style={{}}
         size={40}
-        onClick={() => navigate("/add")}  //route form newUserForm
+        //onClick={() => navigate("/add")}  //route form newUserForm
         fill={"#0d6efd"}
       /> </>
   );
@@ -148,11 +137,10 @@ function UserData(props) {
 }
 
 function UserActions(props) {
-  const [role, setRole] = useState(props.user.role);
   return (
     <>
       <td className="col-2">
-        <DropdownButton id="dropdown-basic-button" title="Change Role" onSelect={ev => setRole(ev)}>
+        <DropdownButton id="dropdown-basic-button" title="Change Role" onSelect={ev => props.changeRole(props.user, ev)}>
           <Dropdown.Item eventKey="option-1">Officer</Dropdown.Item>
           <Dropdown.Item eventKey="option-2">Manager</Dropdown.Item>
         </DropdownButton>
