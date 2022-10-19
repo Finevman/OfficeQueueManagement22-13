@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
@@ -14,6 +14,8 @@ import { Officer } from './officer';
  * <Outlet /> component is replaced according to which route is matching the URL.
  */
 
+
+//SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
   const [services, setServices] = useState([]);
@@ -46,14 +48,20 @@ function DefaultLayout(props) {
     }
   }
   return (
-  <Row className="vh-200">
-  <Col md={12} className="below-nav">
-    <ServicesContainer services={services} takeTicket={takeTicket}/>
-  </Col>
-  </Row>
+    <Container className = "mt-5 pt-5">
+      <Row className='justify-content-md-center'>
+        <Col md="auto" bg="light" >
+          <ServicesContainer services={services} takeTicket={takeTicket}/>
+        </Col>
+      </Row>
+    </Container>
+
+
   )
 }
 
+
+//ADMIN LAYOUT
 function AdminLayout(props){
 
   /*
@@ -67,13 +75,19 @@ function AdminLayout(props){
   */
 }
 
+//OFFICIER LAYOUT
 function OfficerLayout(){
+  //implements function here if needed
   return (
-  <Row className="vh-200">
-  <Col md={12} className="below-nav">
-    <Officer/>
-  </Col>
-  </Row>
+
+    <Container className = "mt-5 pt-5">
+      <Row className='justify-content-md-center'>
+        <Col md="auto" bg="light" >
+          <Officer/>
+        </Col>
+      </Row>
+    </Container>
+
   )
 
 }
@@ -193,6 +207,7 @@ function NotFoundLayout() {
 }
 */
 
+//LOGIN LAYOUT
 function LoginLayout(props) {
   return (
     <Row className="vh-200">
@@ -206,7 +221,7 @@ function LoginLayout(props) {
 /**
  * This layout shuld be rendered while we are waiting a response from the server.
  */
-function LoadingLayout(props) {
+/*function LoadingLayout(props) {
   
   return (
     <Row className="vh-100">
@@ -218,6 +233,6 @@ function LoadingLayout(props) {
     </Row>
   )
 }
-
+*/
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, LoadingLayout, DefaultLayout, AdminLayout, OfficerLayout };
+export { LoginLayout, DefaultLayout, AdminLayout, OfficerLayout };
