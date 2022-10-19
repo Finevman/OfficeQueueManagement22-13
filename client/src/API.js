@@ -125,7 +125,7 @@ function deleteUser(user) {
   });
 }
 
-function updateUserRole(user) {
+function updateUserRole(user, newRole) {
   return new Promise((resolve, reject) => {
     fetch(APIURL + '/User', {
       method: 'PUT',
@@ -133,7 +133,7 @@ function updateUserRole(user) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: user.id, role: user.role }),
+      body: JSON.stringify({ id: user.id, role: newRole }),
     }).then((response) => {
       if (response.ok) {
         resolve(null);

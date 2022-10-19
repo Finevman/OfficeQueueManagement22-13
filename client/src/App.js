@@ -62,14 +62,8 @@ function Main() {
   const [currentU, setCurrentU] = useState({});
   const [message, setMessage] = useContext(MessageContext);
   const location = useLocation();
-  const [users, setUsers] = useState([]);
 
   const {handleErrors} = useContext(MessageContext);
-
-  API.getAllUsers()
-      .then((users) => {
-        setUsers(users);
-      }).catch(err => handleErrors(err));
 
   //*******CHECK_AUTH*******//
   useEffect(() => {

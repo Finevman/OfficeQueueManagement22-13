@@ -14,7 +14,6 @@ function UserForm(props) {
 
 	const navigate = useNavigate();
 
-
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		// validation
