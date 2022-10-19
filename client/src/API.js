@@ -167,6 +167,31 @@ function addUser(user) {
   });
 }
 
+async function readQueues(){
+	const url = 'http://localhost:3001' + '/Queues';
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+		}
+		});
+		if(response.ok){
+			const list = await response.json();
+			return list;
+		}
+		else{
+			console.log(response.statusText);
+			const text = await response.text();
+			throw new TypeError(text);
+		}
+	}
+	catch(e){
+		console.log(e);
+		throw e;
+	}
+}
+
 
 /************************************************/
 
@@ -251,6 +276,6 @@ async function updateRiddleStatus(id, status) {
 //EXPORT FUNCTIONS------------------------------
 const API = {
 	logIn, getUserInfo, logOut, getServices, takeTicket,
-	getAllUsers, deleteUser, updateUserRole, addUser
+	getAllUsers, deleteUser, updateUserRole, addUser, readQueues
 }
 export default API;

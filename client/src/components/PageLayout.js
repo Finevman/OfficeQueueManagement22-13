@@ -47,12 +47,21 @@ function DefaultLayout(props) {
       handleErrors({error:"Service must be a valid string"})
     }
   }
-  
+
+  async function getQueues(){
+    try {
+      const queues = await API.readQueues();
+      console.log(queues);
+    } catch (e){
+      handleErrors(e);
+    }
+  }
+
   return (
     <Container className = "mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-          <ServicesContainer services={services} takeTicket={takeTicket}/>
+          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues}/>
         </Col>
       </Row>
     </Container>

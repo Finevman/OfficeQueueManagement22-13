@@ -1,6 +1,8 @@
 import { Card, Button, Container, Row } from "react-bootstrap";
 import { TicketButton } from "./ticketButton";
 
+
+
 function calcWait(tr, nr, ki, sir){
 
     //Missing implementation of the calculation
