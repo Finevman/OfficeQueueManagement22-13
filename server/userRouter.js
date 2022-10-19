@@ -3,7 +3,7 @@ var router = express.Router();
 var c = require('./userController');
 
 
-//add a new user with all information needed. (Name, Lastname, Email, Password, Salt, Role)
+//add a new user with all information needed. (Name, Lastname, Email, Password, Salt, Role) //i think that salt must be genered in backend (Leo)
 router.post('/User',c.addUser);
 //delete a user with it's id
 router.delete('/User/:id',c.deleteUser);

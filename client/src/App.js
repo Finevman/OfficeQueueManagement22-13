@@ -3,13 +3,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
-import { Container, Row, Toast} from 'react-bootstrap/';
+import { Container, Row, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, LoadingLayout, AdminLayout, OfficerLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { ServicesContainer } from './components/serviceCards';
-import { Officer, Officer_2 } from './components/officer';
 import {Admin} from './components/admin'
 
 import MessageContext from './messageCtx';
@@ -48,71 +47,76 @@ function App() {
             <Route path="/*" element={<Main />} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
-            <Toast.Body>{ message }</Toast.Body>
+            <Toast.Body>{message}</Toast.Body>
           </Toast>
         </Container>
       </MessageContext.Provider>
     </BrowserRouter>
-  ) 
+  )
 }
 
 function Main() {
-/************AUTHENTICATION VARIABLES*****************/
+  /************AUTHENTICATION VARIABLES*****************/
 
-const [loggedIn, setLoggedIn] = useState(false);
-const [currentU, setCurrentU] = useState({});
-const [message, setMessage] = useContext(MessageContext);
-const location = useLocation();
-const {handleErrors} = useContext(MessageContext);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [currentU, setCurrentU] = useState({});
+  const [message, setMessage] = useContext(MessageContext);
+  const location = useLocation();
+  const [users, setUsers] = useState([]);
 
-//*******CHECK_AUTH*******//
-useEffect(() => {
-  const checkAuth = async () => {
-    const user_curr = await API.getUserInfo(); // we have the user info here
-    user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
-    setCurrentU(user_curr);
-  };
-  checkAuth();
-}, [loggedIn]);
+  const {handleErrors} = useContext(MessageContext);
 
+  API.getAllUsers()
+      .then((users) => {
+        setUsers(users);
+      }).catch(err => handleErrors(err));
 
-//***********************//
+  //*******CHECK_AUTH*******//
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user_curr = await API.getUserInfo(); // we have the user info here
+      user_curr.name === 'Guest' ? setLoggedIn(false) : setLoggedIn(true);
+      setCurrentU(user_curr);
+    };
+    checkAuth();
+  }, [loggedIn]);
+  //***********************//
 
-//********HANDLE_LOGIN*******//
-const handleLogin = async (credentials) => {
-  try {
-    const user = await API.logIn(credentials);
-    setLoggedIn(true);
-    setCurrentU(user);
-    //setUserFilter(false);
+  //********HANDLE_LOGIN*******//
+  const handleLogin = async (credentials) => {
+    try {
+      const user = await API.logIn(credentials);
+      setLoggedIn(true);
+      setCurrentU(user);
+      //setUserFilter(false);
 
-    setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
-  } catch (err) {
-    console.log(err)
-    if (err === 'Unauthorized') {
-      setMessage({ msg: "Incorrect username or password", type: 'danger' });
-    } else {
-      setMessage({ msg: "Server problem, please try again or contact assistance", type: 'danger' });
+      setMessage({ msg: `Welcome ${user.name}`, type: 'success' });
+    } catch (err) {
+      console.log(err)
+      if (err === 'Unauthorized') {
+        setMessage({ msg: "Incorrect username or password", type: 'danger' });
+      } else {
+        setMessage({ msg: "Server problem, please try again or contact assistance", type: 'danger' });
+      }
     }
-  }
-};
-//*****************************//
+  };
+  //*****************************//
 
-//********HANDLE_LOGOUT*******//
-const handleLogout = async () => {
-  await API.logOut();
-  setLoggedIn(false);
+  //********HANDLE_LOGOUT*******//
+  const handleLogout = async () => {
+    await API.logOut();
+    setLoggedIn(false);
 
-  //BEST PRACTISE after Logout-->Clean up everything!
-  setCurrentU({});
-//  setUserFilter(false);
-  setMessage('');
-};
-/*****************************************************/
-return (
-  <>
+    //BEST PRACTISE after Logout-->Clean up everything!
+    setCurrentU({});
+    //  setUserFilter(false);
+    setMessage('');
+  };
+  /*****************************************************/
+  return (
+    <>
 
-    < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+      < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
@@ -129,7 +133,7 @@ return (
     </Routes>
   </>
 
-);
+  );
 }
 
 export default App;

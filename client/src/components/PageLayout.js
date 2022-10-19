@@ -7,7 +7,7 @@ import { ServicesContainer } from './serviceCards';
 import {Admin} from './admin'
 import MessageContext from '../messageCtx';
 import API from '../API';
-import { Officer_2 } from './officer';
+import { Officer } from './officer';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
@@ -15,7 +15,7 @@ import { Officer_2 } from './officer';
  */
 
 function DefaultLayout(props) {
-  
+
   const [services, setServices] = useState([]);
 
   const {handleErrors} = useContext(MessageContext);
@@ -64,7 +64,7 @@ function AdminLayout(props){
 function OfficerLayout(props){
   <Row className="vh-200">
   <Col md={12} className="below-nav">
-    <Officer_2/>
+    <Officer/>
   </Col>
 </Row>
 

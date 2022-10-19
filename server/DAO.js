@@ -23,10 +23,10 @@ function readUsers() {
   });
 }
 
-function addUser(Name, lastname, email, password, salt, role) {
+function addUser(name, lastname, email, password, salt, role) {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO USERS (Name, Lastname, Email, Password, Salt, Role) VALUES(?,?,?,?,?,?)';
-    db.run(sql, Name, lastname, email, password, salt, role, (err, rows) => {
+    db.run(sql, name, lastname, email, password, salt, role, (err, rows) => {
       if (err) {
         reject(err);
       } else {
