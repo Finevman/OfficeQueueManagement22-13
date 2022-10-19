@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
 import { Navigation } from './components/Navigation';
 import { ServicesContainer } from './components/serviceCards';
-import { Officer, Officer_2 } from './components/officer';
+import { Officer } from './components/officer';
 
 import MessageContext from './messageCtx';
 import API from './API';
@@ -70,6 +70,7 @@ function App() {
           <Routes>
             <Route path="/*" element={<Main />} />
             <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
+            <Route path="/officer" element={<Officer/>} />
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{ message }</Toast.Body>
@@ -137,14 +138,14 @@ return (
 
     <Routes>
       <Route path="/" element={
-         <DefaultLayout />
-         //<Navigate to="/login" replace state={location} />  
+         //<DefaultLayout />
+         <Navigate to="/login" replace state={location} />  
          //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
       } >
       </Route>
       <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
 
-      <Route path="/officer" element={!loggedIn ?  <Officer_2 /> : <Navigate replace to='/' />} />
+      <Route path="/officer" element={ <Officer/>} />
       
             
     </Routes>
