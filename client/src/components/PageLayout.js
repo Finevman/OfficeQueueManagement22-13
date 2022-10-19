@@ -45,28 +45,36 @@ function DefaultLayout(props) {
       handleErrors({error:"Service must be a valid string"})
     }
   }
+  return (
   <Row className="vh-200">
   <Col md={12} className="below-nav">
     <ServicesContainer services={services} takeTicket={takeTicket}/>
   </Col>
-</Row>
-
+  </Row>
+  )
 }
 
 function AdminLayout(props){
+
+  /*
+  return (
   <Row className="vh-200">
   <Col md={12} className="below-nav">
     <Admin/>
   </Col>
-</Row>
+  </Row>
+  )
+  */
 }
 
-function OfficerLayout(props){
+function OfficerLayout(){
+  return (
   <Row className="vh-200">
   <Col md={12} className="below-nav">
     <Officer/>
   </Col>
-</Row>
+  </Row>
+  )
 
 }
 /*

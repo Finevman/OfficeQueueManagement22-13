@@ -110,7 +110,7 @@ function Main() {
   return (
     <>
 
-      < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
+    <Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
     <Routes>
       <Route path="/" element={
