@@ -22,7 +22,7 @@ exports.addUser =async function(req,res)  {
         let min = 0, max = _charStr.length-1, salt = '';
         let len = 32;
 
-        for(var i = 0, index; i < len; i++){
+        for(var i = 0; i < len; i++){
              
             let index = Math.floor(Math.random()*(max-min+1)+min),
             numStart = _charStr.length - 10;
