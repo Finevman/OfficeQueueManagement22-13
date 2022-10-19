@@ -14,6 +14,15 @@ exports.readUsers =async function(req,res)  {
         }
     )
 }
+function RandomIndex(min, max, i,_charStr){
+    
+    let index = Math.floor(Math.random()*(max-min+1)+min),
+        numStart = _charStr.length - 10;
+    if(i==0&&index>=numStart){
+        index = RandomIndex(min, max, i,_charStr);
+    }
+    return index;
+}
 
 
 
@@ -21,15 +30,8 @@ exports.addUser =async function(req,res)  {
         const  _charStr ='abacdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789';
         let min = 0, max = _charStr.length-1, salt = '';
         let len = 32;
-
-        for(var i = 0; i < len; i++){
-             
-            let index = Math.floor(Math.random()*(max-min+1)+min),
-            numStart = _charStr.length - 10;
-            if(i==0&&index>=numStart){
-                index = RandomIndex(min, max, i);
-            }
-                     
+        for(var i = 0, index; i < len; i++){
+            index = RandomIndex(min, max, i,_charStr);
             salt += _charStr[index];
         }
     // console.log(salt);
