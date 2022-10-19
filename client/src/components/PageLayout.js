@@ -47,6 +47,7 @@ function DefaultLayout(props) {
       handleErrors({error:"Service must be a valid string"})
     }
   }
+  
   return (
     <Container className = "mt-5 pt-5">
       <Row className='justify-content-md-center'>
