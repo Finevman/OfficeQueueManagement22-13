@@ -64,15 +64,17 @@ function DefaultLayout(props) {
 //ADMIN LAYOUT
 function AdminLayout(props){
 
-  /*
   return (
-  <Row className="vh-200">
-  <Col md={12} className="below-nav">
-    <Admin/>
-  </Col>
-  </Row>
+  
+  <Container className = "mt-5 pt-5">
+    <Row className="vh-100">
+      <Col md={12} className="below-nav">
+        <Admin/>
+      </Col>
+    </Row>
+  </Container>  
   )
-  */
+  
 }
 
 //OFFICIER LAYOUT
