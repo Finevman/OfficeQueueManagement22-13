@@ -3,7 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./App.css";
 
 import React, { useState, useEffect, useContext, } from 'react';
-import { Container, Row, Toast } from 'react-bootstrap/';
+import { Container, Toast } from 'react-bootstrap/';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { DefaultLayout, LoginLayout, LoadingLayout } from './components/PageLayout';
@@ -13,15 +13,21 @@ import { Officer } from './components/officer';
 
 import MessageContext from './messageCtx';
 import API from './API';
-import { Button } from 'bootstrap';
 import { Admin } from './components/admin';
+
+let handleErrors; //MARTA'S COMMENT --> variable defined here because otherwise error at line 99
 
 function App() {
 
   const [message, setMessage] = useState('');
   const [services, setServices] = useState([]);
+  const [tickets, setTickets]= useState([]);
 
-  const handleErrors = (err) => {
+  const addTicketToGeneralQueue= (newTicket) =>{
+    setTickets(tickets => [...tickets, newTicket])
+  }
+
+  handleErrors = (err) => {
     let msg = '';
     if (err.error) msg = err.error;
     else if (String(err) === "string") msg = String(err);
@@ -49,6 +55,7 @@ function App() {
       try {
         const tId = await API.takeTicket(service)
         console.log(tId)
+        setTickets()
       } catch (error) {
         handleErrors(error)
       }
@@ -70,12 +77,8 @@ function App() {
         <Container fluid className="App">
           <Routes>
             <Route path="/*" element={<Main />} />
-<<<<<<< HEAD
             <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket}/>} />
             <Route path="/officer" element={<Officer/>} />
-=======
-            <Route path="/serviceCards" element={<ServicesContainer services={services} takeTicket={takeTicket} />} />
->>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
           </Routes>
           <Toast show={message !== ''} onClose={() => setMessage('')} delay={4000} autohide>
             <Toast.Body>{message}</Toast.Body>
@@ -147,35 +150,18 @@ function Main() {
 
       < Navigation logout={handleLogout} user={currentU} loggedIn={loggedIn} />
 
-<<<<<<< HEAD
-    <Routes>
-      <Route path="/" element={
-         //<DefaultLayout />
-         <Navigate to="/login" replace state={location} />  
-         //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
-      } >
-      </Route>
-      <Route path="/login" element={!loggedIn ?  <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} /> 
-
-      <Route path="/officer" element={ <Officer/>} />
-      
-            
-    </Routes>
-  </>
-=======
       <Routes>
         <Route path="/" element={
-          <DefaultLayout />
+          //<DefaultLayout />
           //<Navigate to="/login" replace state={location} />  
-          //<Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
+          <Navigate to="/officer"/> //MARTA'S TEMPORARY COMMENT
         } >
         </Route>
         <Route path="/login" element={!loggedIn ? <LoginLayout login={handleLogin} /> : <Navigate replace to='/' />} />
 
-        <Route path="/officer" element={!loggedIn ? <Officer_2 /> : <Navigate replace to='/' />} />
->>>>>>> f30122bc1e62ef796e83b6868b96157c7ed76d26
+        <Route path="/officer" element={loggedIn ? <Officer /*user={currentU}*/ /> : <Navigate replace to='/' />} />
 
-        <Route path="/admin" element={<Admin users={users} changeRole={changeRole}/>} />
+        <Route path="/admin" element={<Admin users={users} /*changeRole={changeRole}   //error: changeRole not defined *//>} />
 
       </Routes>
     </>
