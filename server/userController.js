@@ -34,8 +34,7 @@ exports.addUser =async function(req,res)  {
             index = RandomIndex(min, max, i,_charStr);
             salt += _charStr[index];
         }
-    // console.log(salt);
-    dao.addUser(req.body.Name, req.body.Lastname, req.body.Email, req.body.Password, salt, req.body.Role).then(
+    dao.addUser(req.body.user.name, req.body.user.lastname, req.body.user.email, req.body.user.password, salt, req.body.user.role).then(
         result => {
             return res.status(200).json();                       
         },
