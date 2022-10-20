@@ -24,6 +24,7 @@ function LoginForm(props) {
     props.login(credentials)
       .then( () => navigate( oldPath ) )
       .catch((err) => { 
+        console.log(err)
         setErrorMessage(err.error); setShow(true); 
       });
       

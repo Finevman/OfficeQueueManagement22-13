@@ -1,27 +1,108 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button, Container } from 'react-bootstrap';
 import { Link, useParams, useLocation, Outlet } from 'react-router-dom';
 
 import { LoginForm } from './Auth';
-
+import { ServicesContainer } from './serviceCards';
+import {Admin} from './admin'
 import MessageContext from '../messageCtx';
 import API from '../API';
+import { Officer } from './officer';
 
 /**
  * Except when we are waiting for the data from the server, this layout is always rendered.
  * <Outlet /> component is replaced according to which route is matching the URL.
  */
 
+
+//SERVICE CARD LAYOUT FOR NO LOGGED USERS
 function DefaultLayout(props) {
 
-  <Row className="vh-200">
-  <Col md={12} className="below-nav">
+  const [services, setServices] = useState([]);
 
-  </Col>
-</Row>
+  const {handleErrors} = useContext(MessageContext);
 
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const fetchedServices = await API.getServices();
+        setServices(fetchedServices);
+      } catch (error) {
+        handleErrors(error);
+      }
+      
+    }
+    fetchServices();
+  }, []);
+
+  async function takeTicket(service){
+    if (typeof service === 'string') {
+      try {
+        const tId = await API.takeTicket(service)
+        console.log(tId)
+      } catch (error) {
+        handleErrors(error)
+      }
+    } else {
+      handleErrors({error:"Service must be a valid string"})
+    }
+  }
+
+  async function getQueues(){
+    try {
+      const queues = await API.readQueues();
+      console.log(queues);
+    } catch (e){
+      handleErrors(e);
+    }
+  }
+
+  return (
+    <Container className = "mt-5 pt-5">
+      <Row className='justify-content-md-center'>
+        <Col md="auto" bg="light" >
+          <ServicesContainer services={services} takeTicket={takeTicket} queues={getQueues}/>
+        </Col>
+      </Row>
+    </Container>
+
+
+  )
 }
 
+
+//ADMIN LAYOUT
+function AdminLayout(props){
+
+  return (
+  
+  <Container className = "mt-5 pt-5">
+    <Row className="vh-100">
+      <Col md={12} className="below-nav">
+        <Admin/>
+      </Col>
+    </Row>
+  </Container>  
+  )
+  
+}
+
+//OFFICIER LAYOUT
+function OfficerLayout(){
+  //implements function here if needed
+  return (
+
+    <Container className = "mt-5 pt-5">
+      <Row className='justify-content-md-center'>
+        <Col md="auto" bg="light" >
+          <Officer/>
+        </Col>
+      </Row>
+    </Container>
+
+  )
+
+}
 /*
 function MainLayout(props) {
 
@@ -138,6 +219,7 @@ function NotFoundLayout() {
 }
 */
 
+//LOGIN LAYOUT
 function LoginLayout(props) {
   return (
     <Row className="vh-200">
@@ -151,7 +233,8 @@ function LoginLayout(props) {
 /**
  * This layout shuld be rendered while we are waiting a response from the server.
  */
-function LoadingLayout(props) {
+/*function LoadingLayout(props) {
+  
   return (
     <Row className="vh-100">
       <Col md={4} bg="light" className="below-nav" id="left-sidebar">
@@ -162,6 +245,6 @@ function LoadingLayout(props) {
     </Row>
   )
 }
-
+*/
 //export { DefaultLayout, AddLayout, EditLayout, NotFoundLayout, LoginLayout, MainLayout, LoadingLayout };
-export { LoginLayout, LoadingLayout, DefaultLayout };
+export { LoginLayout, DefaultLayout, AdminLayout, OfficerLayout };

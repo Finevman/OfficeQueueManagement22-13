@@ -15,14 +15,14 @@ const Navigation = (props) => {
     <Navbar bg="primary" expand="lg" variant="dark" fixed="top" className="justify-content-between">
       <Link to="/">
         <Navbar.Brand>
-        <i className="bi bi-signpost-2-fill icon-size m-1"/> Office Queue Managment
+        <i className="bi bi-signpost-2-fill icon-size m-2"/> Office Queue Managment
         </Navbar.Brand>
       </Link>
       <Nav>
-        <Navbar.Text className="mx-1">
+        <Navbar.Text className="mx-3">
           {props.user && props.user.name && `Welcome, ${props.user.role ? props.user.role : ''} ${props.user.name}!`}
         </Navbar.Text>
-        <Form className="mx-1 ">
+        <Form className="mx-3">
           {props.loggedIn ? <LogoutButton logout={props.logout} /> :  <LoginButton />}
         </Form>
       </Nav>

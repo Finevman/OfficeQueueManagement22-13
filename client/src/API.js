@@ -1,24 +1,46 @@
 const APIURL = 'http://localhost:3001/api/v0';
+const URL = 'http://localhost:3001/api';
+
+
+function getJson(httpResponsePromise) {
+	// server API always return JSON, in case of error the format is the following { error: <message> } 
+	return new Promise((resolve, reject) => {
+	  httpResponsePromise
+		.then((response) => {
+		  if (response.ok) {
+  
+		   // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
+		   response.json()
+			  .then( json => resolve(json) )
+			  .catch( err => reject({ error: "Cannot parse server response" }))
+  
+		  } else {
+			// analyzing the cause of error
+			response.json()
+			  .then(obj => 
+				reject(obj)
+				) // error msg in the response body
+			  .catch(err => reject({ error: "Cannot parse server response" })) // something else
+		  }
+		})
+		.catch(err => 
+		  reject({ error: "Cannot communicate"  })
+		) // connection error
+	});
+  }
 
 /*************************AUTHENTICATION API**********************/
 
 const logIn = async (credentials) => {
-	const response = await fetch(APIURL + '/sessions', {
+	return getJson( fetch(APIURL + '/sessions', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		credentials: 'include',
 		body: JSON.stringify(credentials),
-	});
-	if (response.ok) {
-		const user = await response.json();
-		return user;
-	}
-	else {
-		const errDetails = await response.text();
-		throw errDetails;
-	}
+	})
+	)
 };
 
 const guest = { id: 0, name: 'Guest' }; //Dummy object in case of error
@@ -49,42 +71,29 @@ const logOut = async () => {
 /*************************SERVICES API**********************/
 
 async function getServices() {
-	const res = await fetch('http://localhost:3001' + '/api/services', {
+
+	return getJson(fetch('http://localhost:3001' + '/api/services', {
 		method: 'GET',
 		credentials: 'include',
-	});
-	if (res.ok) {
-		const studyPlan = await res.json();
-		return studyPlan;
-	} else {
-		const err = await res.text();
-		// console.log(err)
-		throw err;
-	}
+	})
+	)
 }
 
 /*************************TICKET API**********************/
 
 async function takeTicket(service) {
-	const res = await fetch('http://localhost:3001' + '/api/Ticket/' + service, {
+	return getJson( fetch('http://localhost:3001' + '/api/Ticket/' + service, {
 		method: 'POST',
 		credentials: 'include',
-	});
-	if (res.ok) {
-		const tId = await res.json();
-		return tId;
-	} else {
-		const err = await res.text();
-		// console.log(err)
-		throw err;
-	}
+	})
+	)
 }
 
 /*************************ADMIN API**********************/
 
 async function getAllUsers() {
   return new Promise((resolve, reject) => {
-		fetch(APIURL + '/User')
+		fetch(URL + '/User')
 			.then((response) => {
 				if (response.ok) {
 					response.json()
@@ -107,7 +116,7 @@ async function getAllUsers() {
 
 function deleteUser(user) { 
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User/' + user.id, {
+    fetch(URL + '/User/' + user.id, {
       method: 'DELETE',
       credentials: 'include',
       headers: {
@@ -125,15 +134,15 @@ function deleteUser(user) {
   });
 }
 
-function updateUserRole(user) {
+function updateUserRole(user, newRole) {
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User', {
+    fetch(URL + '/User', {
       method: 'PUT',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: user.id, role: user.role }),
+      body: JSON.stringify({ id: user.id, role: newRole }),
     }).then((response) => {
       if (response.ok) {
         resolve(null);
@@ -148,7 +157,7 @@ function updateUserRole(user) {
 
 function addUser(user) {
   return new Promise((resolve, reject) => {
-    fetch(APIURL + '/User', {
+    fetch(URL + '/User', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -165,6 +174,31 @@ function addUser(user) {
       }
     }).catch(() => { reject({ error: "Cannot communicate with the server." }) }); // connection errors
   });
+}
+
+async function readQueues(){
+	const url = 'http://localhost:3001' + '/Queues';
+	try {
+		const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+		}
+		});
+		if(response.ok){
+			const list = await response.json();
+			return list;
+		}
+		else{
+			console.log(response.statusText);
+			const text = await response.text();
+			throw new TypeError(text);
+		}
+	}
+	catch(e){
+		console.log(e);
+		throw e;
+	}
 }
 
 
@@ -251,6 +285,6 @@ async function updateRiddleStatus(id, status) {
 //EXPORT FUNCTIONS------------------------------
 const API = {
 	logIn, getUserInfo, logOut, getServices, takeTicket,
-	getAllUsers, deleteUser, updateUserRole, addUser
+	getAllUsers, deleteUser, updateUserRole, addUser, readQueues
 }
 export default API;
