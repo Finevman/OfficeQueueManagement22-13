@@ -161,6 +161,19 @@ app.delete(PREFIX + '/sessions/current', (req, res) => {
   });
 });
 
+
+/********QUEUES**********/
+
+//GET /Ticket/list  --> list of the tickets to be served
+app.get('/api/Ticket/list', (req, res) => {
+  dao.readTicketsToBeServed()
+      .then(tickets => {res.json(tickets);})
+      .catch(()=>{console.log(err); res.status(500).end();});
+});
+
+
+
+
 //***************************************** */ 
 
 //SERVER RUNNING
