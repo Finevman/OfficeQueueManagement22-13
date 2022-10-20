@@ -88,14 +88,16 @@ function AdminLayout(props){
 }
 
 //OFFICIER LAYOUT
-function OfficerLayout(){
+function OfficerLayout(props){
   //implements function here if needed
-  return (
+  const [ticketList, setTicketList]= useState({})     //? correct approach?
+  
 
+  return (
     <Container className = "mt-5 pt-5">
       <Row className='justify-content-md-center'>
         <Col md="auto" bg="light" >
-          <Officer/>
+          <Officer userName={props.userName}/>
         </Col>
       </Row>
     </Container>

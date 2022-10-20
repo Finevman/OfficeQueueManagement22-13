@@ -89,6 +89,22 @@ async function takeTicket(service) {
 	)
 }
 
+async function takeTicketsToBeServed(){
+	const url = 'http://localhost:3001' + 'api/Ticket/list';
+	const response= await fetch(url);
+    if(response.ok) {
+      const tickets= await response.json();
+      return tickets;
+    }
+    else {
+      try {
+        const errDetail = await response.json();
+        throw errDetail.message;
+      }
+      catch(err) { throw err;}
+    }
+}
+
 /*************************ADMIN API**********************/
 
 async function getAllUsers() {
@@ -284,7 +300,7 @@ async function updateRiddleStatus(id, status) {
 
 //EXPORT FUNCTIONS------------------------------
 const API = {
-	logIn, getUserInfo, logOut, getServices, takeTicket,
+	logIn, getUserInfo, logOut, getServices, takeTicket, takeTicketsToBeServed,
 	getAllUsers, deleteUser, updateUserRole, addUser, readQueues
 }
 export default API;

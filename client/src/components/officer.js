@@ -8,7 +8,8 @@ function Officer(props){
         <>
         <label style={{ fontSize: 45, fontWeight:'bold', textAlign: 'left', paddingTop: '30px'}}>Counter N°</label>
         <FormGroup id='officer_options' style={{padding:'80px', textAlign:'center', alignItems:'center', justifyContent:'center'}}>
-            <FormLabel style={{ fontSize: 45, width: "100%"}}>Welcome Officer {/*props.user.name*/}</FormLabel>
+            <FormLabel style={{ fontSize: 45, width: "100%"}}>Welcome Officer {props.userName}</FormLabel>
+
             <FormLabel style={{ fontSize: 65, fontWeight:'bold',width: "100%", paddingTop:'40px'}}>Ticket Number</FormLabel>
            
             <ButtonGroup style={{paddingTop: '70px', justifyContent:'space-between'}}>
